@@ -60,22 +60,20 @@ DLLEXPORT qore_license_t qore_module_license = QL_LGPL;
 
 
 /** @defgroup markdown_functions Markdown Functions
- */
-//@{
+*/
+///@{
 namespace Qore::Markdown;
 
 //! get sundown's markdown version
 /**
-    TODO/FIXME
- */
+*/
 string markdown_version() [flags=RET_VALUE_ONLY] {
     return new QoreStringNode(SUNDOWN_VERSION);
 }
 
 //! Convert markdown string to HTML
 /**
-    TODO/FIXME
- */
+*/
 string markdown_convert(string input) [flags=RET_VALUE_ONLY] {
     unsigned int extensions = MKDEXT_NO_INTRA_EMPHASIS|MKDEXT_TABLES|MKDEXT_FENCED_CODE|MKDEXT_AUTOLINK|MKDEXT_STRIKETHROUGH|MKDEXT_SUPERSCRIPT|MKDEXT_LAX_SPACING;
     sd_callbacks callbacks;
@@ -96,5 +94,4 @@ string markdown_convert(string input) [flags=RET_VALUE_ONLY] {
 
     return ret;
 }
-
-//@}
+///@}
