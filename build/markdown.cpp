@@ -20,14 +20,11 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
 #include <qore/Qore.h>
 #include "markdown.h"
 #include "html.h"
 
-
 static QoreNamespace MarkdownNS("Markdown");
-
 
 void init_markdown_functions(QoreNamespace& ns);
 
@@ -43,7 +40,6 @@ void markdown_module_delete() {
    // nothing to do here in this case
 }
 
-
 extern "C" DLLEXPORT void markdown_qore_module_desc(QoreModuleInfo& mod_info) {
     mod_info.name = "markdown";
     mod_info.version = PACKAGE_VERSION;
@@ -58,24 +54,13 @@ extern "C" DLLEXPORT void markdown_qore_module_desc(QoreModuleInfo& mod_info) {
     mod_info.license = QL_LGPL;
     mod_info.license_str = "LGPL";
 }
-
-
-/** @defgroup markdown_functions Markdown Functions
-*/
-///@{
-namespace Qore::Markdown;
-
-//! get sundown's markdown version
-/**
-*/
-string markdown_version() [flags=RET_VALUE_ONLY] {
-    return new QoreStringNode(SUNDOWN_VERSION);
-}
-
-//! Convert markdown string to HTML
-/**
-*/
-string markdown_convert(string input) [flags=RET_VALUE_ONLY] {
+# 64 "/home/david/src/qore/git/module-markdown/src/markdown.qpp"
+# 69 "/home/david/src/qore/git/module-markdown/src/markdown.qpp"
+# 76 "/home/david/src/qore/git/module-markdown/src/markdown.qpp"
+// string markdown_convert(string input) {}
+static QoreValue f_markdown_convert_Vs(const QoreListNode* args, RuntimeConfig& runtime_cfg, ExceptionSink* xsink) {
+    const QoreStringNode* input = HARD_QORE_VALUE_STRING(args, 0);
+# 79 "/home/david/src/qore/git/module-markdown/src/markdown.qpp"
     unsigned int extensions = MKDEXT_NO_INTRA_EMPHASIS|MKDEXT_TABLES|MKDEXT_FENCED_CODE|MKDEXT_AUTOLINK|MKDEXT_STRIKETHROUGH|MKDEXT_SUPERSCRIPT|MKDEXT_LAX_SPACING;
     sd_callbacks callbacks;
     html_renderopt options;
@@ -95,4 +80,18 @@ string markdown_convert(string input) [flags=RET_VALUE_ONLY] {
 
     return ret;
 }
-///@}
+
+// string markdown_version() {}
+static QoreValue f_markdown_version(const QoreListNode* args, RuntimeConfig& runtime_cfg, ExceptionSink* xsink) {
+# 72 "/home/david/src/qore/git/module-markdown/src/markdown.qpp"
+    return new QoreStringNode(SUNDOWN_VERSION);
+}
+
+
+DLLLOCAL void init_markdown_functions(QoreNamespace& ns) {
+    // string markdown_convert(string input) {}
+    ns.addBuiltinVariant("markdown_convert", (q_func_t)f_markdown_convert_Vs, QCF_RET_VALUE_ONLY, QDOM_DEFAULT, stringTypeInfo, 1, stringTypeInfo, QORE_PARAM_NO_ARG, "input");
+    // string markdown_version() {}
+    ns.addBuiltinVariant("markdown_version", (q_func_t)f_markdown_version, QCF_RET_VALUE_ONLY, QDOM_DEFAULT, stringTypeInfo);
+
+}

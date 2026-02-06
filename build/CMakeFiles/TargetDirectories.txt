@@ -1,0 +1,11 @@
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/markdown.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/docs.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/dist.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/package.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/package_source.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/edit_cache.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/rebuild_cache.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/list_install_components.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/install.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/install/local.dir
+/home/david/src/qore/git/module-markdown/build/CMakeFiles/install/strip.dir
