@@ -1,5 +1,5 @@
 #!/usr/bin/env qore
-%new-style
+%modern
 %requires markdown
 
 printf("VERSION: %n\n", markdown_version());
