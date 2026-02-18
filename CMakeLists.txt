@@ -40,7 +40,7 @@ set(SUNDOWN_SRC
 
 #add_definitions(-DUSE_UTF8)
 
-qore_wrap_qpp_value(QPP_SOURCES ${QPP_SRC})
+qore_wrap_qpp_value(QPP_SOURCES METALIST QPP_META_SRC ${QPP_SRC})
 
 SET (module_name "markdown")
 
@@ -50,5 +50,13 @@ qore_binary_module(${module_name} "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_P
 #qore_user_modules(${EFSW_QMOD})
 
 qore_dist("${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+
+# install qpp metadata files
+if (COMMAND qore_install_qpp_metadata)
+    qore_install_qpp_metadata(${module_name} ${QPP_META_SRC})
+else()
+    install(FILES ${QPP_META_SRC}
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/qore/metadata)
+endif()
 
 qore_config_info()
