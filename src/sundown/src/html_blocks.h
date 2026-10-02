@@ -1,4 +1,5 @@
 /* C code produced by gperf version 3.0.3 */
+/* Local ANSI C prototype update: Copyright 2026 Qore Technologies, s.r.o. */
 /* Command-line: gperf -N find_block_tag -H hash_block_tag -C -c -E --ignore-case html_block_names.txt  */
 /* Computed positions: -k'1-2' */
 
@@ -87,9 +88,7 @@ inline
 #endif
 #endif
 static unsigned int
-hash_block_tag (str, len)
-     register const char *str;
-     register unsigned int len;
+hash_block_tag (const char *str, unsigned int len)
 {
   static const unsigned char asso_values[] =
     {
@@ -141,9 +140,7 @@ __attribute__ ((__gnu_inline__))
 #endif
 #endif
 const char *
-find_block_tag (str, len)
-     register const char *str;
-     register unsigned int len;
+find_block_tag (const char *str, unsigned int len)
 {
   enum
     {

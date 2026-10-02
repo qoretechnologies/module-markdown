@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.8.3)
+# Copyright (C) 2026 Qore Technologies, s.r.o.
+cmake_minimum_required(VERSION 3.16)
 
 project(qore-markdown-module)
 
@@ -44,10 +45,17 @@ qore_wrap_qpp_value(QPP_SOURCES METALIST QPP_META_SRC ${QPP_SRC})
 
 SET (module_name "markdown")
 
-add_library(${module_name} SHARED ${CPP_SRC} ${QPP_SOURCES} ${SUNDOWN_SRC})
+set(QORE_DOX_TMPL_SRC docs/mainpage.doxygen.tmpl)
 
-qore_binary_module(${module_name} "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
-#qore_user_modules(${EFSW_QMOD})
+add_library(${module_name} MODULE ${CPP_SRC} ${QPP_SOURCES} ${SUNDOWN_SRC})
+
+qore_external_binary_module(${module_name} "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+
+if (DOXYGEN_FOUND)
+    qore_wrap_dox(QORE_DOX_SRC ${QORE_DOX_TMPL_SRC})
+    add_custom_target(QORE_MOD_DOX_FILES DEPENDS ${QORE_DOX_SRC})
+    add_dependencies(docs-module QORE_MOD_DOX_FILES)
+endif()
 
 qore_dist("${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 

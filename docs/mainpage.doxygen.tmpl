@@ -1,0 +1,32 @@
+/** @mainpage Qore Markdown module
+
+    Copyright 2026 Qore Technologies, s.r.o.
+
+    @tableofcontents
+    @section markdownintro Introduction
+
+    The Markdown module converts Markdown text to HTML using the bundled Sundown
+    1.16.0 parser. It supports tables, fenced code blocks, automatic links,
+    strikethrough, and superscripts. Rendered HTML preserves raw HTML in the input;
+    applications accepting untrusted documents must apply their own HTML policy.
+
+    @section markdownexample Example
+    @code{.py}
+%modern
+%requires markdown
+string html = markdown_convert("# Invoice summary\n\n**Paid** in full.\n");
+printf("%s", html);
+    @endcode
+
+    @section markdownfunctions Functions
+    See @ref markdown_functions for the conversion and parser-version functions.
+
+    @section markdownlicense License
+    The Qore wrapper uses LGPL 2.1 or later. Bundled Sundown uses the ISC license;
+    its Houdini escaping sources retain the upstream MIT permission notice.
+
+    @section markdownreleasenotes Release notes
+    @subsection markdown_1_0_0 Version 1.0.0
+    - Supports current CMake and the packaged Qore SDK.
+    - Includes generated API documentation and conversion regression tests.
+*/

@@ -1,0 +1,105 @@
+#!/usr/bin/env qore
+# Copyright (C) 2026 Qore Technologies, s.r.o.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
+%modern
+%requires QUnit
+%requires markdown
+%exec-class MarkdownTest
+
+class MarkdownTest inherits QUnit::Test {
+    constructor() : Test("MarkdownTest", "1.0") {
+        addTestCase("parser version", \testVersion());
+        addTestCase("empty input and paragraphs", \testEmpty());
+        addTestCase("block markup", \testBlocks());
+        addTestCase("inline extensions", \testInline());
+        addTestCase("links and escaping", \testLinks());
+        addTestCase("Unicode and malformed markup", \testUnicode());
+        addTestCase("reference state is local to each conversion", \testReferences());
+        addTestCase("concurrent conversions", \testConcurrent());
+        set_return_value(main());
+    }
+
+    testVersion() {
+        assertEq("1.16.0", markdown_version());
+    }
+
+    testEmpty() {
+        assertEq("", markdown_convert(""));
+        assertEq("", markdown_convert(" \t\n\n"));
+        assertEq("<p>invoice paid</p>\n", markdown_convert("invoice paid"));
+        assertEq("<p>first</p>\n\n<p>second</p>\n", markdown_convert("first\n\nsecond\n"));
+    }
+
+    testBlocks() {
+        assertEq("<h1>Invoice</h1>\n", markdown_convert("# Invoice\n"));
+        assertEq("<ul>\n<li>one</li>\n<li>two</li>\n</ul>\n", markdown_convert("- one\n- two\n"));
+        assertEq("<pre><code class=\"qore\">a &lt; b &amp; c\n</code></pre>\n",
+            markdown_convert("```qore\na < b & c\n```\n"));
+        assertEq("<table><thead>\n<tr>\n<th>item</th>\n<th>price</th>\n</tr>\n</thead><tbody>\n"
+            + "<tr>\n<td>book</td>\n<td>12</td>\n</tr>\n</tbody></table>\n",
+            markdown_convert("item | price\n---- | -----\nbook | 12\n"));
+    }
+
+    testInline() {
+        assertEq("<p><em>open</em> <strong>paid</strong> <del>overdue</del></p>\n",
+            markdown_convert("*open* **paid** ~~overdue~~"));
+        assertEq("<p>invoice_number x<sup>2</sup></p>\n", markdown_convert("invoice_number x^2"));
+        assertEq("<p><code>&lt;tag&gt; &amp;</code></p>\n", markdown_convert("`<tag> &`"));
+    }
+
+    testLinks() {
+        assertEq("<p><a href=\"https://qore.org?a=1&amp;b=2\" title=\"Details\">Qore</a></p>\n",
+            markdown_convert("[Qore](https://qore.org?a=1&b=2 \"Details\")"));
+        assertEq("<p><a href=\"https://qore.org\">https://qore.org</a></p>\n",
+            markdown_convert("https://qore.org"));
+        assertEq("<p>Tom &amp; Jerry</p>\n", markdown_convert("Tom & Jerry"));
+        assertEq("<p><span>raw HTML</span></p>\n", markdown_convert("<span>raw HTML</span>"));
+    }
+
+    testUnicode() {
+        assertEq("<h2>Příliš žluťoučký 日本語 😀</h2>\n",
+            markdown_convert("## Příliš žluťoučký 日本語 😀\n"));
+        assertEq("<p>before *after</p>\n", markdown_convert("before *after"));
+        assertEq("<p>[missing][definition]</p>\n", markdown_convert("[missing][definition]"));
+        assertEq("<p>after</p>\n", markdown_convert("\ufeffafter"));
+    }
+
+    testReferences() {
+        assertEq("<p><a href=\"https://qore.org\">Qore</a></p>\n",
+            markdown_convert("[Qore][id]\n\n[id]: https://qore.org\n"));
+        assertEq("<p>[Qore][id]</p>\n", markdown_convert("[Qore][id]"));
+        assertEq("<p>final</p>\n", markdown_convert("final"));
+    }
+
+    private renderWorker(Queue results, int id) {
+        try {
+            string text;
+            for (int i = 0; i < 100; ++i) {
+                text = markdown_convert(sprintf("worker %d **paid**", id));
+                if (text != sprintf("<p>worker %d <strong>paid</strong></p>\n", id)) {
+                    throw "MARKDOWN-TEST-ERROR", text;
+                }
+            }
+            results.push({"id": id, "text": text});
+        } catch (hash<ExceptionInfo> ex) {
+            results.push({"id": id, "error": ex});
+        }
+    }
+
+    testConcurrent() {
+        Queue results();
+        for (int id = 0; id < 8; ++id) {
+            background renderWorker(results, id);
+        }
+        hash<string, bool> seen;
+        for (int i = 0; i < 8; ++i) {
+            hash<auto> result = results.get(30s);
+            assertFalse(exists result.error, sprintf("worker result: %Y", result));
+            assertTrue(result.id >= 0 && result.id < 8);
+            assertFalse(exists seen{result.id});
+            seen{result.id} = True;
+            assertEq(sprintf("<p>worker %d <strong>paid</strong></p>\n", result.id), result.text);
+        }
+    }
+}
