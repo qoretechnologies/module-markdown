@@ -1,0 +1,10 @@
+#!/usr/bin/env qore
+# Copyright (C) 2026 Qore Technologies, s.r.o.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+%requires markdown
+if (markdown_version() != "1.16.0") {
+    throw "MARKDOWN-SDK-ERROR", "unexpected parser version";
+}
+if (markdown_convert("**invoice paid**") != "<p><strong>invoice paid</strong></p>\n") {
+    throw "MARKDOWN-SDK-ERROR", "unexpected compiled conversion result";
+}
