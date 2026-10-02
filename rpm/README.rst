@@ -7,6 +7,10 @@ qore-markdown-module.spec supports Fedora, Enterprise Linux and openSUSE.
 The runtime package contains the native module and its API metadata. Reference
 documentation is a separate noarch subpackage. The recipe uses distribution
 compiler/hardening flags, normal debug packages and reproducible source maps.
+The SDK determines the native module directory. Java binding generation is
+disabled explicitly because this package contains the native module and its
+HTML reference; Java/JNI qualification is separate. The preparation step
+corrects a historical executable permission on the C source ``html.c``.
 
 Prepare an archive from a committed revision using qore-packaging::
 

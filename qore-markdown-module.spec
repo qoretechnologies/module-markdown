@@ -12,7 +12,7 @@
 %bcond_without docs
 Name: qore-markdown-module
 Version: 1.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Markdown-to-HTML conversion for Qore
 License: LGPL-2.1-or-later AND ISC AND MIT
 URL: https://github.com/qoretechnologies/module-markdown
@@ -52,6 +52,8 @@ API reference and examples for Qore's Markdown module.
 
 %prep
 %autosetup
+# The historical source tree marks this C translation unit executable.
+chmod 644 src/sundown/html/html.c
 %build
 %{?set_build_flags}
 . %{_rpmconfigdir}/qore/module-env.sh
@@ -59,10 +61,11 @@ qore_set_source_prefix_maps "%{qore_debug_source_dir}"
 cmake -S . -B build -G 'Unix Makefiles' \
   -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE=-DNDEBUG \
   -DCMAKE_C_FLAGS_RELEASE=-DNDEBUG \
-  -DCMAKE_INSTALL_PREFIX=%{_prefix} -DCMAKE_INSTALL_LIBDIR=%{_lib} \
+  -DCMAKE_INSTALL_PREFIX=%{_prefix} \
   -DCMAKE_SKIP_RPATH=ON -DCMAKE_IGNORE_PREFIX_PATH=/usr/local \
   -DQore_DIR=%{_libdir}/cmake/Qore -DQORE_EXECUTABLE=/usr/bin/qore \
   -DQORE_QPP_EXECUTABLE=/usr/bin/qpp \
+  -DQORE_GENERATE_JAVA_BINDINGS=OFF \
   -DCMAKE_DISABLE_FIND_PACKAGE_Doxygen=%{!?with_docs:ON}%{?with_docs:OFF}
 cmake --build build -- %{?_smp_mflags}
 %if %{with docs}
@@ -95,6 +98,11 @@ python3 -B -W error -m unittest discover -s test -p test_uninstall.py -v
 %doc %{_docdir}/%{name}-doc/
 %endif
 %changelog
+* Fri Oct 02 2026 David Nichols <david@qore.org> - 1.0.0-2
+- Use the SDK module path without an unused library-directory override.
+- Generate the packaged native API documentation without optional Java bindings.
+- Correct the historical executable mode on a C source file before debug packaging.
+
 * Fri Oct 02 2026 David Nichols <david@qore.org> - 1.0.0-1
 - Build from a clean source archive with the packaged Qore SDK and ABI dependency generator.
 - Include API metadata, documentation, bundled-library notices, and offline conversion checks.

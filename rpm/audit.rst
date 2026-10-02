@@ -259,3 +259,15 @@ Scope: multi-distribution RPM recipe, source preparation instructions and instal
    * - 62. Correctness: Algorithms verified against reference implementations; edge cases tested (empty data, single sample, all-zero features)
      - Pass
      - Candidate RPM builds and their eight conversion cases (55 assertions), four uninstall tests, and strict documentation pass on Fedora, EL10 and Leap. All three installed runtime and SDK checks pass, including compiled conversions. The qualification helper obtains the distribution-specific documentation path from the RPM file list.
+
+Release 2 follow-up
+-------------------
+
+Case-insensitive final log review found an unused CMAKE_INSTALL_LIBDIR argument,
+optional Java generation without JNI, and a historical executable bit on html.c.
+The recipe now uses the SDK module directory, explicitly selects native HTML
+documentation without Java bindings, and normalizes the C source permission.
+All three candidate-2 RPM builds pass eight conversion cases (55 assertions),
+four uninstall tests and documentation with no warnings or errors. No parser
+implementation or test assertions changed. Exact committed builds and installed
+qualification remain recorded in qore-packaging evidence.
