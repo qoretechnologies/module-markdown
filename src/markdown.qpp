@@ -3,7 +3,7 @@
 
   Qore Programming Language
 
-  Copyright 2012-2013 Qore Technologies
+  Copyright 2012 - 2026 Qore Technologies
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,10 @@ extern "C" DLLEXPORT void markdown_qore_module_desc(QoreModuleInfo& mod_info) {
     mod_info.init = markdown_module_init;
     mod_info.ns_init = markdown_module_ns_init;
     mod_info.del = markdown_module_delete;
+#ifdef QORE_HAS_MODULE_NS_PURGE
+    // the namespace is purged when the module is deleted, before the types are freed (see QoreModuleInfo::ns)
+    mod_info.ns = &MarkdownNS;
+#endif
     mod_info.license = QL_LGPL;
     mod_info.license_str = "LGPL";
 }
