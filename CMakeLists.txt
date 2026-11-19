@@ -45,7 +45,10 @@ qore_wrap_qpp_value(QPP_SOURCES METALIST QPP_META_SRC ${QPP_SRC})
 
 SET (module_name "markdown")
 
-set(QORE_DOX_TMPL_SRC docs/mainpage.doxygen.tmpl)
+set(QORE_DOX_TMPL_SRC
+    docs/mainpage.doxygen.tmpl
+    docs/release-notes.doxygen.tmpl
+)
 
 add_library(${module_name} MODULE ${CPP_SRC} ${QPP_SOURCES} ${SUNDOWN_SRC})
 
